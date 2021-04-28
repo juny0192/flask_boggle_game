@@ -14,16 +14,22 @@ boggle_game = Boggle()
 
 @app.route('/')
 def index():
+    """main homepage"""
+    
     return render_template('main.html')
 
 @app.route('/board')
 def game_start():
+    """board-game page"""
+
     board = boggle_game.make_board()
     session["board"] = board
     return render_template('board.html', board = board)
 
 @app.route('/check')
 def check_word():
+    """check if the submitted word is a valid English"""
+
     searchVal = request.args["q"]
     board = session["board"]
     result = boggle_game.check_valid_word(board, searchVal)

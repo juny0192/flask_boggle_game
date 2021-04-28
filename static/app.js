@@ -2,34 +2,61 @@ const $guessInput = $("#guessInp");
 const $guessSubmit = $("#guessSubmit");
 const $result = $("#result");
 
-// class BoggleGame {
+wordStorage = new Set();
+let total = 0;
+let time = 60;
 
-//     constructor(boardID)
+function showMessage(msg) {
+  $("#msg").text(msg);
+}
 
-// }
+function showScore(score) {
+  $("#score").text(score);
+}
 
-$guessSubmit.on("click", async function (evt) {
+let countTime = setInterval(function () {
+  time -= 1;
+  showTimer();
+  if (time === 0) {
+    clearInterval(countTime);
+    showMessage(`Time is up! Your score is ${total}`);
+    $guessSubmit.off("click", clickHandler);
+  }
+}, 1000);
+
+function showTimer() {
+  $("#timer").text(`Time left: ${time}`);
+}
+
+$guessSubmit.on("click", clickHandler);
+
+async function clickHandler(evt) {
   evt.preventDefault();
 
   let searchVal = $guessInput.val();
   if (searchVal.length === 0) {
+    showMessage(`You need to enter any valid word.`);
+    return;
+  }
+
+  if (wordStorage.has(`${searchVal}`)) {
+    showMessage(`You found the word: "${searchVal}" already.`);
     return;
   }
 
   const res = await axios.get("/check", { params: { q: searchVal } });
 
   if (res.data.result === "not-word") {
-    showMessage(`${searchVal} is not a valid English word`);
+    showMessage(`"${searchVal}" is not a valid English word`);
   } else if (res.data.result === "not-on-board") {
-    showMessage(`${searchVal} is not a valid English but not on the board`);
+    showMessage(`"${searchVal}" is not a valid English but not on the board`);
   } else {
-    showMessage(`Added: ${searchVal}`);
-    $result.append($("<li>"), { searchVal });
+    showMessage(`Added: "${searchVal}"`);
+    $result.prepend($(`<li class="list-group-item">${searchVal}</li>`));
+    wordStorage.add(`${searchVal}`);
+    total += searchVal.length;
+    showScore(`Total score: ${total}`);
   }
 
-  $result.val("");
-});
-
-function showMessage(msg) {
-  $("#msg").text(msg);
+  $guessInput.val("");
 }
