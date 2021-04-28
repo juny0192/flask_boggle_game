@@ -1,10 +1,11 @@
 const $guessInput = $("#guessInp");
 const $guessSubmit = $("#guessSubmit");
 const $result = $("#result");
+const $submitForm = $("#submit-form");
 
 wordStorage = new Set();
 let total = 0;
-let time = 60;
+let time = 10;
 
 function showMessage(msg) {
   $("#msg").text(msg);
@@ -19,8 +20,9 @@ let countTime = setInterval(function () {
   showTimer();
   if (time === 0) {
     clearInterval(countTime);
-    showMessage(`Time is up! Your score is ${total}`);
-    $guessSubmit.off("click", clickHandler);
+    $submitForm.hide();
+    $("#timer").hide();
+    endGame();
   }
 }, 1000);
 
@@ -34,6 +36,7 @@ async function clickHandler(evt) {
   evt.preventDefault();
 
   let searchVal = $guessInput.val();
+
   if (searchVal.length === 0) {
     showMessage(`You need to enter any valid word.`);
     return;
@@ -55,8 +58,17 @@ async function clickHandler(evt) {
     $result.prepend($(`<li class="list-group-item">${searchVal}</li>`));
     wordStorage.add(`${searchVal}`);
     total += searchVal.length;
-    showScore(`Total score: ${total}`);
   }
 
   $guessInput.val("");
+}
+
+async function endGame() {
+  const res = await axios.post("/post-score", { score: total });
+
+  if (res.data.newRecord === true) {
+    showMessage(`New record is '${total}'`);
+  } else {
+    showMessage(`Final score is '${total}'`);
+  }
 }

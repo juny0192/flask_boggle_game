@@ -13,11 +13,13 @@
       {% endfor %}
     </tbody>
   </table>
-  <div class="container p-0">
-    <p id="timer"></p>
-  </div>
-  <div class="container mt-5 p-0">
-    <form id="submit-form" method="POST" class="row">
+
+  <p id="timer" class="container p-0"></p>
+  <p>High score: {{ highScore }}</p>
+  <p>Total play times: {{ nTimesPlay }}</p>
+
+  <div class="container mt-5 p-0" id="submit-form">
+    <form method="POST" class="row">
       <div class="form-group col-4">
         <input
           id="guessInp"
@@ -31,13 +33,12 @@
         <button class="btn btn-outline-dark" id="guessSubmit">Submit</button>
       </div>
     </form>
-    <div id="results" class="pt-2">
-      <p id="msg" class="text-danger"></p>
-      <br />
-      <p id="score" class="text-primary"></p>
-      <br />
-      <ul id="result" class="list-group-flush p-0"></ul>
-    </div>
+  </div>
+  <div id="results" class="pt-2">
+    <p id="msg" class="text-danger"></p>
+    <p id="score" class="text-primary"></p>
+    <br />
+    <ul id="result" class="list-group-flush p-0"></ul>
   </div>
 </div>
 
