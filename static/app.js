@@ -5,7 +5,7 @@ const $submitForm = $("#submit-form");
 
 wordStorage = new Set();
 let total = 0;
-let time = 10;
+let time = 60;
 
 function showMessage(msg) {
   $("#msg").text(msg);
@@ -21,7 +21,6 @@ let countTime = setInterval(function () {
   if (time === 0) {
     clearInterval(countTime);
     $submitForm.hide();
-    $("#timer").hide();
     endGame();
   }
 }, 1000);
